@@ -5,6 +5,7 @@ class UserValidator:
     def __init__(self):
         self.name_pattern = r"^[a-zA-ZçğıöşüÇĞİÖŞÜ\s]{2,50}$"
         self.email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        self.password_pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$"
 
     def validate_first_name(self, first_name):
         if not first_name:
@@ -17,13 +18,17 @@ class UserValidator:
         return bool(re.match(self.name_pattern, last_name))
     
     def validate_email(self, email):
-        # EP: Geçerli format, @ eksik, nokta eksik gibi durumlar
         return bool(email and re.match(self.email_pattern, email))
 
     def validate_dob(self, dob_str):
-        # BVA: Yanlış tarih formatı, var olmayan tarih (30 Şubat gibi)
         try:
             datetime.strptime(dob_str, '%d/%m/%Y')
             return True
         except ValueError:
             return False
+        
+    def validate_password(self, password):
+        return bool(password and re.match(self.password_pattern, password))
+
+    def validate_confirm_password(self, password, confirm_password):
+        return password == confirm_password
