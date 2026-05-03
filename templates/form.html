@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e1e1e1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .input-error {
+            border: 2px solid red !important;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .error-box {
+            margin-top: 20px;
+            background-color: #ffe6e6;
+            border-left: 5px solid red;
+            padding: 10px;
+            border-radius: 5px;
+            color: #cc0000;
+            font-size: 0.95em;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Create New Account</h1>
+
+    {% if success %}
+        <div class="success">Account created successfully!</div>
+    {% endif %}
+
+    <form method="post">
+        <label>First Name:</label>
+        <input name="first_name" class="{{ 'input-error' if errors.first_name }}" value="{{ request.form.first_name if not success else '' }}">
+        
+        <label>Last Name:</label>
+        <input name="last_name" class="{{ 'input-error' if errors.last_name }}" value="{{ request.form.last_name if not success else '' }}">
+        
+        <label>Email:</label>
+        <input name="email" class="{{ 'input-error' if errors.email }}" value="{{ request.form.email if not success else '' }}">
+        
+        <label>Password:</label>
+        <input type="password" name="password" id="password" class="{{ 'input-error' if errors.password }}">
+        <span id="password-warning" class="error"></span>
+        
+        <label>Confirm Password:</label>
+        <input type="password" name="confirm_password" class="{{ 'input-error' if errors.confirm }}">
+        
+        <label>Date of Birth (dd/mm/yyyy):</label>
+        <input name="dob" class="{{ 'input-error' if errors.dob }}" value="{{ request.form.dob if not success else '' }}">
+
+        <button type="submit">Submit</button>
+
+        {% if errors %}
+        <div class="error-box">
+            <ul>
+            {% for err in errors.values() %}
+                <li>{{ err }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+document.getElementById('password').addEventListener('input', function () {
+    const value = this.value;
+    const warning = document.getElementById('password-warning');
+
+    const strongEnough = value.length >= 8 &&
+                         /[a-zA-Z]/.test(value) &&
+                         /\d/.test(value);
+
+    if (!strongEnough) {
+        warning.innerText = "Weak password (min 8 chars, letter and number)";
+    } else {
+        warning.innerText = "";
+    }
+});
+</script>
+</body>
+</html>
